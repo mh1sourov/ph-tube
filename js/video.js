@@ -1,5 +1,13 @@
 // loadcategories sec
 
+function getTime(time){
+    const hour = parseInt((time / 3600));
+    const remainingSecond = parseInt(time % 3600)
+    const minute = parseInt((remainingSecond / 60))
+    const second = parseInt((remainingSecond % 60))
+    return `${hour} hour ${minute} minute ${second} sec ago`;
+    }
+
 const loadCategories = () => {
     fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
     .then((res) => res.json())
@@ -43,7 +51,11 @@ const videoSection = document.getElementById("video");
     <img class ="h-full w-full object-cover"
       src=${video.thumbnail}
       alt="" />
-    <span class="absolute right-2 bottom-2 bg-black rounded-lg text-gray-300 p-1">${video.others.posted_date}</span>
+      ${
+        video.others.posted_date.length == 0 ? "" : `<span class="absolute text-xs right-2 bottom-2 bg-black rounded-lg text-gray-300 p-1">${getTime(video.others.posted_date)}</span>`
+      }
+      
+    
   </figure>
   <div class="px-0 py-3 flex gap-2">
     <div>
