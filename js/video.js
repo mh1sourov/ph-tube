@@ -6,7 +6,12 @@ function getTime(time){
     const second = parseInt((remainingSecond % 60))
     return `${hour} hour ${minute} minute ${second} sec ago`;
     }
-
+const removeActiveClass = () =>{
+   const buttons = document.getElementsByClassName("btn_category")
+         for(let button of buttons){
+            button.classList.remove("active")
+         }
+}
 
 const loadCategories = () => {
     fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
@@ -24,7 +29,7 @@ const displayCategories = (categories) => {
     const buttonContainer = document.createElement("div")
 
     buttonContainer.innerHTML = `
-    <button onClick="loadCategoryVideo(${item.category_id})" class="btn hover:bg-red-600">${item.category}</button>`
+    <button id= "btn-${item.category_id}" onClick="loadCategoryVideo(${item.category_id})" class="btn hover:bg-red-600 btn_category">${item.category}</button>`
     categoryContainer.appendChild(buttonContainer);
     
 }
@@ -32,8 +37,14 @@ const displayCategories = (categories) => {
 
 function loadCategoryVideo(id){
     fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+
     .then((res) => res.json())
-    .then((data) => displayVideo(data.category))
+    .then((data) => {
+        removeActiveClass();
+        const activeButton = document.getElementById(`btn-${id}`)
+         activeButton.classList.add("active")
+        displayVideo(data.category)
+    })
     .catch((error) => console.log(error))
 
 }
@@ -47,12 +58,22 @@ const loadVideo = () =>{
 }
 
 const displayVideo = (receiveVideoData) =>{
-
 const videoSection = document.getElementById("video");
-
+videoSection.innerHTML = '';
+if(receiveVideoData.length == 0){
+    videoSection.classList.remove("grid")
+    videoSection.innerHTML = `
+    <div class = "flex flex-col justify-center items-center w-full mx-auto h-[300px]">
+    <img src = "../Icon.png">
+    <h1 class="text-2xl text-center font-bold">Opps! Sorry!! There is No Video</h1>
+    </div>
+    `
+    return;
+}
+else{
+    videoSection.classList.add("grid") 
+}
 receiveVideoData.forEach(video => {
-
-    
     const card = document.createElement("card");
     card.innerHTML = `
     <div class="card card-compact ">
